@@ -1,0 +1,40 @@
+---
+import { contentfulClient } from '../lib/contentful';
+import type { BlogPost } from '../lib/contentful';
+
+const entries = await contentfulClient.getEntries<BlogPost>({
+	content_type: 'blogPost',
+});
+
+const posts = entries.items.map((item) => {
+	const { title, date, description, slug } = item.fields;
+	return {
+		title,
+		slug,
+		description,
+		date: new Date(date).toLocaleDateString(),
+	};
+});
+---
+
+<html lang="en">
+	<head>
+		<title>My Blog</title>
+	</head>
+	<body>
+		<h1>My Blog</h1>
+		<ul>
+			{
+				posts.map((post) => (
+					<li>
+						<a href={`/posts/${slug}/`}>
+							<h2>{title}</h2>
+						</a>
+						<time>{date}</time>
+						<p>{description}</p>
+					</li>
+				))
+			}
+		</ul>
+	</body>
+</html>
